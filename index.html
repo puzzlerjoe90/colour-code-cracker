@@ -283,9 +283,10 @@ function setStreakDisplay(current, best) {
 }
 
 function generateCode() {
+  const seed = "ColourCode" + todayKey;
   let hash = 0;
-  for (let i = 0; i < todayKey.length; i++) {
-    hash = todayKey.charCodeAt(i) + ((hash << 5) - hash);
+  for (let i = 0; i < seed.length; i++) {
+    hash = seed.charCodeAt(i) + ((hash << 5) - hash);
   }
   let rand = hash;
   const next = () => (rand = (rand * 9301 + 49297) % 233280) / 233280;
