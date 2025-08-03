@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Colour Code Cracker: Hard Mode</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta property="og:title" content="Colour Code Cracker: Hard Mode">
-  <meta property="og:description" content="Try Hard Mode – now with a sixth colour.">
-  <meta property="og:image" content="https://puzzlerjoe90.github.io/colour-code-cracker/share-preview.png">
-  <meta property="og:url" content="https://puzzlerjoe90.github.io/colour-code-cracker/hard-mode/">
-  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Social Sharing Preview -->
+  <meta property="og:title" content="Colour Code Cracker: Hard Mode" />
+  <meta property="og:description" content="🎯 Crack the daily colour code in 6 tries!" />
+  <meta property="og:image" content="https://puzzlerjoe90.github.io/colour-code-cracker/preview.jpg" />
+  <meta property="og:url" content="https://puzzlerjoe90.github.io/colour-code-cracker/hard-mode/" />
+  <meta name="twitter:card" content="summary_large_image" />
 
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-EGCBDDKWS9"></script>
@@ -21,330 +23,536 @@
 
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to bottom, #f9f9f9, #e0f7fa);
       margin: 0;
-      padding: 0;
-      text-align: center;
-    }
-    h1 {
-      margin-top: 20px;
-      font-size: 2.2em;
-      color: #2c3e50;
-    }
-    .palette, .guess-row, .feedback {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
       display: flex;
       justify-content: center;
-      align-items: center;
-      flex-wrap: wrap;
-      margin: 10px 0;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 20px;
+      color: #2d3436;
     }
+
+    .game-container {
+      background: #fff;
+      border-radius: 20px;
+      padding: 20px;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+
+    .title {
+      font-size: 2.4em;
+      font-weight: bold;
+      text-align: center;
+      background: linear-gradient(90deg, #ff7675, #ffeaa7, #74b9ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 5px;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 1em;
+      color: #636e72;
+      margin-bottom: 8px;
+    }
+
+    .streaks {
+      text-align: center;
+      font-size: 0.9em;
+      margin-bottom: 16px;
+      color: #555;
+    }
+
+    .palette {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+    }
+
     .palette-colour {
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      border: 2px solid #ccc;
-      margin: 5px;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
       cursor: pointer;
     }
+
     .palette-colour.selected {
-      border: 4px solid #000;
+      border: 3px solid #000;
     }
+
+    .board {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 15px;
+    }
+
+    .guess-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
     .circle {
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      background-color: #eee;
-      margin: 0 5px;
+      background: #ddd;
+      border: 2px solid #fff;
       cursor: pointer;
     }
+
     .circle.empty {
+      background: #eee;
       border: 2px dashed #bbb;
     }
+
+    .feedback {
+      display: flex;
+      margin-left: auto;
+      gap: 4px;
+    }
+
     .dot {
-      width: 15px;
-      height: 15px;
+      width: 12px;
+      height: 12px;
       border-radius: 50%;
-      margin: 2px;
     }
-    .dot.correct { background: gold; }
-    .dot.partial { background: black; }
-    .dot.wrong { background: lightgrey; }
 
-    #submit, #tip-btn, #share-btn, #mute-btn {
-      margin: 10px 5px;
-      padding: 10px 16px;
-      font-size: 1em;
+    .dot.correct { background: #f1c40f; }
+    .dot.partial { background: #2d3436; }
+    .dot.wrong { background: #bdc3c7; }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 10px;
       border: none;
-      border-radius: 6px;
-      background: #3498db;
-      color: white;
+      border-radius: 8px;
+      font-weight: bold;
       cursor: pointer;
+      flex: 1;
     }
-    #submit:disabled {
-      background: #ccc;
-      cursor: not-allowed;
-    }
-    #streakDisplay {
-      margin-top: 10px;
-      font-weight: bold;
-    }
-    #message {
-      font-weight: bold;
-      margin: 10px 0;
-    }
-    .message.success { color: green; }
-    .message.failure { color: crimson; }
 
-    #popup {
+    .submit { background: #00cec9; color: white; }
+    .tip { background: #fdcb6e; }
+    .how { background: #a29bfe; }
+    .mute { background: #dfe6e9; }
+
+    .message {
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .success { color: #00b894; }
+    .failure { color: #d63031; }
+
+    .result-popup {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
       display: none;
       justify-content: center;
       align-items: center;
-    }
-    #popup-content {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
+      z-index: 999;
     }
 
-    #back-link {
-      display: block;
-      margin-top: -10px;
-      margin-bottom: 15px;
-      font-size: 0.95em;
+    .result-content {
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+      max-width: 300px;
+      text-align: center;
+    }
+
+    .result-content h2 {
+      margin-bottom: 10px;
+    }
+
+    .share-btn {
+      margin-top: 10px;
+      background: #55efc4;
+      color: #2d3436;
+    }
+
+    .back-link {
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .back-link a {
+      color: #636e72;
+      font-size: 0.9em;
+      text-decoration: none;
+    }
+
+    .back-link a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
+
 <body>
-  <h1>Colour Code Cracker: Hard Mode</h1>
-  <a id="back-link" href="../index.html">← Back to Normal Mode</a>
-  <p id="streakDisplay"></p>
-  <div class="palette" id="palette"></div>
-  <div id="board"></div>
-  <div>
-    <button id="submit" disabled>Submit</button>
-    <button id="tip-btn">Tip</button>
-    <button id="share-btn">Share</button>
-    <button id="mute-btn">🔊</button>
-  </div>
-  <p id="message" class="message"></p>
-  <div id="popup">
-    <div id="popup-content">
-      <h2 id="popup-title"></h2>
-      <p id="popup-text"></p>
+  <div class="game-container">
+    <h1 class="title">Colour Code Cracker: Hard Mode</h1>
+    <p class="subtitle">Can you crack the tougher 4-colour code?</p>
+    <p class="streaks" id="streakDisplay">🔥 Streak: 0 | 🏆 Best: 0</p>
+    <div class="palette" id="palette"></div>
+    <div class="board" id="board"></div>
+    <div class="controls">
+      <button class="submit" id="submit" disabled>Submit</button>
+      <button class="tip" id="tip-btn">Tip</button>
+      <button class="how" onclick="alert('🟡 = correct position, ⚫ = correct colour only, ⚪ = wrong')">How</button>
+      <button class="mute" id="mute-btn">🔊</button>
+    </div>
+    <div class="message" id="message"></div>
+    <div class="back-link">
+      <a href="../index.html">← Back to Normal Mode</a>
     </div>
   </div>
-  <audio id="bg-music" src="https://cdn.pixabay.com/audio/2023/03/20/audio_eb49c96748.mp3" loop></audio>
-    <script>
-    const colours = ['#e74c3c', '#3498db', '#2ecc71', '#f1c40f', '#ff1493', '#e67e22'];
-    const maxAttempts = 6;
-    const todayKey = new Date().toISOString().slice(0, 10);
-    const seed = "ColourCodeHard" + todayKey;
-    let hash = 0;
-    for (let i = 0; i < seed.length; i++) {
-      hash = seed.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    let rand = hash;
-    const next = () => (rand = (rand * 9301 + 49297) % 233280) / 233280;
 
-    function generateCode() {
-      let code = [];
-      for (let i = 0; i < 4; i++) {
-        code.push(colours[Math.floor(next() * colours.length)]);
-      }
-      return code;
-    }
+  <div class="result-popup" id="popup">
+    <div class="result-content">
+      <h2 id="popup-title"></h2>
+      <p id="popup-text"></p>
+      <button class="share-btn" onclick="shareResult()">📋 Share</button>
+    </div>
+  </div>
 
-    const secretCode = generateCode();
-    const board = document.getElementById("board");
-    const paletteDiv = document.getElementById("palette");
-    const message = document.getElementById("message");
-    const submitBtn = document.getElementById("submit");
-    const tipBtn = document.getElementById("tip-btn");
-    const muteBtn = document.getElementById("mute-btn");
-    const shareBtn = document.getElementById("share-btn");
-    const bgMusic = document.getElementById("bg-music");
+  <audio id="bg-music" loop>
+    <source src="https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/KieLoKaz/Chillhop_Music/KieLoKaz_-_05_-_Browni_Blu_Chill.mp3" type="audio/mpeg">
+  </audio>
+  <script>
+const colours = ['#e74c3c', '#3498db', '#2ecc71', '#f1c40f', '#ff1493', '#e67e22']; // includes orange
+const colourNames = {
+  '#e74c3c': 'Red',
+  '#3498db': 'Blue',
+  '#2ecc71': 'Green',
+  '#f1c40f': 'Yellow',
+  '#ff1493': 'Pink',
+  '#e67e22': 'Orange'
+};
+const guessEmojis = {
+  correct: '🟡',
+  partial: '⚫',
+  wrong: '⚪'
+};
 
-    let currentGuess = [];
-    let guesses = [];
-    let feedbacks = [];
-    let gameOver = false;
-    let selectedColour = null;
+// Unique keys for Hard Mode
+const todayKey = new Date().toISOString().slice(0, 10);
+const prefix = 'ccc-hard-';
+const saveKey = prefix + todayKey;
+const tipKey = prefix + 'tip-' + todayKey;
+const streakKey = prefix + 'streak';
+const bestStreakKey = prefix + 'best-streak';
+const lastWinKey = prefix + 'last-win';
 
-    colours.forEach(c => {
-      const swatch = document.createElement("div");
-      swatch.className = "palette-colour";
-      swatch.style.backgroundColor = c;
-      swatch.onclick = () => {
-        selectedColour = c;
-        document.querySelectorAll('.palette-colour').forEach(p => p.classList.remove('selected'));
-        swatch.classList.add('selected');
+let selectedColour = null;
+let currentGuess = 0;
+let gameOver = false;
+let guessRows = [];
+let guessColours = new Array(4).fill(null);
+let feedbackHistory = [];
+
+function vibrate(ms) {
+  if (navigator.vibrate) navigator.vibrate(ms);
+}
+
+function getGameNumber() {
+  const start = new Date('2024-01-01');
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const diff = Math.floor((today - start) / (1000 * 60 * 60 * 24));
+  return diff + 1;
+}
+
+function formatDateOffset(daysAgo = 0) {
+  const d = new Date();
+  d.setDate(d.getDate() - daysAgo);
+  return d.toISOString().slice(0, 10);
+}
+
+function getStreak() {
+  return parseInt(localStorage.getItem(streakKey)) || 0;
+}
+function getBestStreak() {
+  return parseInt(localStorage.getItem(bestStreakKey)) || 0;
+}
+function setStreakDisplay(current, best) {
+  document.getElementById("streakDisplay").textContent =
+    `🔥 Streak: ${current} | 🏆 Best: ${best}`;
+}
+
+function generateCode() {
+  const seed = "ColourCodeHard" + todayKey;
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    hash = seed.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  let rand = hash;
+  const next = () => (rand = (rand * 9301 + 49297) % 233280) / 233280;
+  let code = [];
+  for (let i = 0; i < 4; i++) {
+    code.push(colours[Math.floor(next() * colours.length)]);
+  }
+  return code;
+}
+const secretCode = generateCode();
+
+function renderPalette() {
+  const palette = document.getElementById('palette');
+  colours.forEach(colour => {
+    const div = document.createElement('div');
+    div.className = 'palette-colour';
+    div.style.backgroundColor = colour;
+    div.onclick = () => {
+      document.querySelectorAll('.palette-colour').forEach(el => el.classList.remove('selected'));
+      div.classList.add('selected');
+      selectedColour = colour;
+      vibrate(20);
+      tryPlayMusic();
+    };
+    palette.appendChild(div);
+  });
+}
+
+function renderBoard() {
+  const board = document.getElementById('board');
+  for (let i = 0; i < 6; i++) {
+    const row = document.createElement('div');
+    row.className = 'guess-row';
+    for (let j = 0; j < 4; j++) {
+      const cell = document.createElement('div');
+      cell.className = 'circle empty';
+      cell.onclick = () => {
+        if (i !== currentGuess || !selectedColour || gameOver) return;
+        guessColours[j] = selectedColour;
+        updateRow();
+        vibrate(10);
+        document.getElementById('submit').disabled = guessColours.includes(null);
+        saveProgress();
       };
-      paletteDiv.appendChild(swatch);
+      row.appendChild(cell);
+    }
+    const fb = document.createElement('div');
+    fb.className = 'feedback';
+    row.appendChild(fb);
+    board.appendChild(row);
+    guessRows.push(row);
+  }
+}
+
+function updateRow() {
+  const row = guessRows[currentGuess].querySelectorAll('.circle');
+  row.forEach((cell, i) => {
+    const col = guessColours[i];
+    cell.style.backgroundColor = col || '#eee';
+    cell.classList.toggle('empty', !col);
+  });
+}
+
+function calculateFeedback(guess, code) {
+  const result = [];
+  const usedSecret = Array(4).fill(false);
+  const usedGuess = Array(4).fill(false);
+  for (let i = 0; i < 4; i++) {
+    if (guess[i] === code[i]) {
+      result[i] = 'correct';
+      usedSecret[i] = usedGuess[i] = true;
+    }
+  }
+  for (let i = 0; i < 4; i++) {
+    if (!usedGuess[i]) {
+      for (let j = 0; j < 4; j++) {
+        if (!usedSecret[j] && guess[i] === code[j]) {
+          result[i] = 'partial';
+          usedSecret[j] = true;
+          break;
+        }
+      }
+      if (!result[i]) result[i] = 'wrong';
+    }
+  }
+  return result;
+}
+
+function handleSubmit() {
+  if (gameOver || guessColours.includes(null)) return;
+  vibrate(60);
+  const fb = calculateFeedback(guessColours, secretCode);
+  feedbackHistory.push(fb);
+  const dots = guessRows[currentGuess].querySelector('.feedback');
+  dots.innerHTML = '';
+  fb.forEach(f => {
+    const dot = document.createElement('div');
+    dot.className = 'dot ' + f;
+    dots.appendChild(dot);
+  });
+
+  if (fb.every(f => f === 'correct')) {
+    gameOver = true;
+    document.getElementById("message").textContent = "🎉 You cracked the code!";
+    document.getElementById("message").className = "message success";
+    showPopup(true);
+
+    const lastWin = localStorage.getItem(lastWinKey);
+    const yesterday = formatDateOffset(1);
+    let newStreak = 1;
+    if (lastWin === yesterday) {
+      newStreak = getStreak() + 1;
+    }
+    localStorage.setItem(streakKey, newStreak);
+    localStorage.setItem(lastWinKey, todayKey);
+
+    if (newStreak > getBestStreak()) {
+      localStorage.setItem(bestStreakKey, newStreak);
+    }
+
+    setStreakDisplay(newStreak, getBestStreak());
+
+    if (typeof gtag === 'function') {
+      gtag('event', 'game_won', { mode: 'hard', attempts: currentGuess + 1 });
+    }
+
+  } else if (currentGuess === 5) {
+    gameOver = true;
+    document.getElementById("message").textContent = "💀 Game over!";
+    document.getElementById("message").className = "message failure";
+    showPopup(false);
+
+    localStorage.setItem(streakKey, 0);
+    setStreakDisplay(0, getBestStreak());
+
+    if (typeof gtag === 'function') {
+      gtag('event', 'game_lost', { mode: 'hard', attempts: currentGuess + 1 });
+    }
+
+  } else {
+    currentGuess++;
+    guessColours = new Array(4).fill(null);
+    document.getElementById('submit').disabled = true;
+  }
+
+  saveProgress();
+}
+
+function showTip() {
+  if (localStorage.getItem(tipKey)) {
+    alert("You've already used your tip today.");
+    return;
+  }
+  const tip = secretCode[Math.floor(Math.random() * 4)];
+  alert("Tip: The code includes " + colourNames[tip] + ".");
+  localStorage.setItem(tipKey, "used");
+  if (typeof gtag === 'function') {
+    gtag('event', 'tip_used', { mode: 'hard' });
+  }
+}
+
+function showPopup(won) {
+  document.getElementById('popup-title').textContent = won ? "You won!" : "You lost!";
+  document.getElementById('popup-text').textContent = won
+    ? `Guessed in ${currentGuess + 1} turn(s)`
+    : `Try again tomorrow!`;
+  document.getElementById('popup').style.display = 'flex';
+}
+
+function shareResult() {
+  const grid = feedbackHistory.map(fb => fb.map(f => guessEmojis[f]).join('')).join('\n');
+  const text = `Colour Code Cracker Hard #${getGameNumber()} - 🔥 Streak: ${getStreak()}\n${grid}`;
+  if (navigator.share) {
+    navigator.share({
+      title: 'Colour Code Cracker Hard',
+      text
     });
+  } else {
+    navigator.clipboard.writeText(text).then(() =>
+      alert("Result copied to clipboard!")
+    );
+  }
+}
 
-    function renderBoard() {
-      board.innerHTML = '';
-      for (let i = 0; i < maxAttempts; i++) {
-        const row = document.createElement("div");
-        row.className = "guess-row";
-        const guess = guesses[i] || [];
-        for (let j = 0; j < 4; j++) {
-          const circle = document.createElement("div");
-          circle.className = "circle";
-          if (guess[j]) circle.style.backgroundColor = guess[j];
-          else circle.classList.add("empty");
-          circle.onclick = () => {
-            if (gameOver || !selectedColour || i !== guesses.length) return;
-            guess[j] = selectedColour;
-            renderBoard();
-            if (guess.length === 4 && guess.every(Boolean)) {
-              submitBtn.disabled = false;
-              currentGuess = guess;
-            }
-          };
-          row.appendChild(circle);
-        }
+function saveProgress() {
+  const data = {
+    currentGuess,
+    feedbackHistory,
+    guessRows: Array.from(document.querySelectorAll('.guess-row')).map(row =>
+      Array.from(row.querySelectorAll('.circle')).map(c => c.style.backgroundColor)
+    ),
+    complete: gameOver
+  };
+  localStorage.setItem(saveKey, JSON.stringify(data));
+}
 
-        const fb = feedbacks[i];
-        if (fb) {
-          const fbDiv = document.createElement("div");
-          fbDiv.className = "feedback";
-          fb.forEach(f => {
-            const dot = document.createElement("div");
-            dot.className = "dot " + f;
-            fbDiv.appendChild(dot);
-          });
-          row.appendChild(fbDiv);
-        }
-
-        board.appendChild(row);
+function loadProgress() {
+  const data = localStorage.getItem(saveKey);
+  if (!data) return;
+  const saved = JSON.parse(data);
+  if (saved.complete) {
+    gameOver = true;
+    document.getElementById("message").textContent = "✅ Already completed today.";
+    document.getElementById("message").className = "message";
+  }
+  currentGuess = saved.currentGuess;
+  feedbackHistory = saved.feedbackHistory || [];
+  saved.guessRows?.forEach((row, i) => {
+    const cells = guessRows[i].querySelectorAll('.circle');
+    row.forEach((color, j) => {
+      if (color && color !== 'rgb(238, 238, 238)') {
+        cells[j].style.backgroundColor = color;
+        cells[j].classList.remove('empty');
       }
-    }
+    });
+  });
+  feedbackHistory.forEach((fb, i) => {
+    const dots = guessRows[i].querySelector('.feedback');
+    dots.innerHTML = '';
+    fb.forEach(type => {
+      const dot = document.createElement('div');
+      dot.className = 'dot ' + type;
+      dots.appendChild(dot);
+    });
+  });
+  if (gameOver) document.getElementById('popup').style.display = 'flex';
+}
 
-    function getFeedback(guess) {
-      const code = [...secretCode];
-      const fb = [];
-      const used = Array(4).fill(false);
+function tryPlayMusic() {
+  const music = document.getElementById('bg-music');
+  if (music.paused && !music.muted) {
+    music.play().catch(() => {});
+  }
+}
 
-      guess.forEach((g, i) => {
-        if (g === code[i]) {
-          fb[i] = 'correct';
-          code[i] = null;
-          used[i] = true;
-        }
-      });
+document.getElementById('mute-btn').onclick = () => {
+  const music = document.getElementById('bg-music');
+  music.muted = !music.muted;
+  document.getElementById('mute-btn').textContent = music.muted ? '🔇' : '🔊';
+};
 
-      guess.forEach((g, i) => {
-        if (!fb[i]) {
-          const idx = code.indexOf(g);
-          if (idx !== -1) {
-            fb[i] = 'partial';
-            code[idx] = null;
-          } else {
-            fb[i] = 'wrong';
-          }
-        }
-      });
+document.getElementById('submit').onclick = handleSubmit;
+document.getElementById('tip-btn').onclick = showTip;
 
-      return fb;
-    }
-
-    function showPopup(win) {
-      document.getElementById("popup").style.display = "flex";
-      document.getElementById("popup-title").textContent = win ? "You Cracked It!" : "Game Over";
-      document.getElementById("popup-text").textContent = win ? "Well done!" : "Better luck tomorrow.";
-    }
-
-    function updateStreakDisplay() {
-      const current = localStorage.getItem('ccc-hard-streak') || 0;
-      const best = localStorage.getItem('ccc-hard-best') || 0;
-      document.getElementById('streakDisplay').textContent = `🔥 Streak: ${current} | ⭐ Best: ${best}`;
-    }
-
-    function handleSubmit() {
-      if (gameOver || currentGuess.length !== 4) return;
-      const fb = getFeedback(currentGuess);
-      feedbacks.push(fb);
-      guesses.push(currentGuess);
-      currentGuess = [];
-      renderBoard();
-
-      if (fb.every(f => f === 'correct')) {
-        showPopup(true);
-        const lastWin = localStorage.getItem('ccc-hard-last-win');
-        const streak = parseInt(localStorage.getItem('ccc-hard-streak')) || 0;
-        const best = parseInt(localStorage.getItem('ccc-hard-best')) || 0;
-        const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0,10);
-        const newStreak = (lastWin === yesterday) ? streak + 1 : 1;
-        localStorage.setItem('ccc-hard-streak', newStreak);
-        localStorage.setItem('ccc-hard-last-win', todayKey);
-        localStorage.setItem('ccc-hard-best', Math.max(best, newStreak));
-        updateStreakDisplay();
-        gtag('event', 'game_won', { attempts: guesses.length, mode: 'hard' });
-        gameOver = true;
-      } else if (guesses.length >= maxAttempts) {
-        showPopup(false);
-        gtag('event', 'game_lost', { mode: 'hard' });
-        gameOver = true;
-      }
-
-      submitBtn.disabled = true;
-    }
-
-    function shareResult() {
-      let grid = feedbacks.map(row =>
-        row.map(r => r === 'correct' ? '🟡' : r === 'partial' ? '⚫' : '⚪').join('')
-      ).join('\n');
-      const streak = localStorage.getItem('ccc-hard-streak') || 0;
-      const gameNum = Math.floor((new Date(todayKey) - new Date("2024-01-01")) / 86400000);
-      const text = `Colour Code Cracker Hard #${gameNum} - 🔥 Streak: ${streak}\n${grid}`;
-      navigator.clipboard.writeText(text);
-      alert("Copied to clipboard!");
-    }
-
-    tipBtn.onclick = () => {
-      const tipped = localStorage.getItem("ccc-hard-tip-" + todayKey);
-      if (tipped) return alert("Tip already used today!");
-      const randIdx = Math.floor(Math.random() * 4);
-      const tip = secretCode[randIdx];
-      alert("Today's code includes the colour: " + colourName(tip));
-      localStorage.setItem("ccc-hard-tip-" + todayKey, "1");
-      gtag('event', 'tip_used', { mode: 'hard' });
-    };
-
-    function colourName(hex) {
-      const names = {
-        '#e74c3c': 'Red',
-        '#3498db': 'Blue',
-        '#2ecc71': 'Green',
-        '#f1c40f': 'Yellow',
-        '#ff1493': 'Pink',
-        '#e67e22': 'Orange'
-      };
-      return names[hex] || hex;
-    }
-
-    muteBtn.onclick = () => {
-      if (bgMusic.paused) {
-        bgMusic.play();
-        muteBtn.textContent = "🔊";
-      } else {
-        bgMusic.pause();
-        muteBtn.textContent = "🔈";
-      }
-    };
-
-    submitBtn.onclick = handleSubmit;
-    updateStreakDisplay();
-    renderBoard();
-    setInterval(() => {
-      if (new Date().toISOString().slice(0, 10) !== todayKey) location.reload();
-    }, 60000);
-  </script>
+renderPalette();
+renderBoard();
+loadProgress();
+setStreakDisplay(getStreak(), getBestStreak());
+</script>
 </body>
 </html>
